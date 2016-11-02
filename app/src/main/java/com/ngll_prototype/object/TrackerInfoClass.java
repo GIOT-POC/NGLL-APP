@@ -13,7 +13,7 @@ public class TrackerInfoClass implements Serializable{
 
     class Data {
         @SerializedName("SIGS")
-        private int rssi;
+        private double rssi;
         @SerializedName("AT_TS")
         private long AT_TS;
         @SerializedName("macAddr")
@@ -21,7 +21,7 @@ public class TrackerInfoClass implements Serializable{
         @SerializedName("frameCnt")
         private int frameCount;
         @SerializedName("snr")
-        private int Snr;
+        private double Snr;
         @SerializedName("GWID")
         private String GWid;
         @SerializedName("TEMP")
@@ -57,7 +57,7 @@ public class TrackerInfoClass implements Serializable{
     }
 
 
-    public int getRssi() {
+    public double getRssi() {
         return data.rssi;
     }
 
@@ -89,7 +89,7 @@ public class TrackerInfoClass implements Serializable{
         this.data.frameCount = frameCount;
     }
 
-    public int getSnr() {
+    public double getSnr() {
         return data.Snr;
     }
 
