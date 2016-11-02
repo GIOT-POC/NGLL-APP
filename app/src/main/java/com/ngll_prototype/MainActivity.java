@@ -36,7 +36,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import ct.imageanchor.R;
 import io.searchbox.client.JestClient;
 import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
@@ -446,14 +445,14 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected int[] doInBackground(String... strings) {
-            int coordinate[] = new int[2];
+            int coordinate[];
             while (goFlag) {
 
 
                 try {
 
                     JestClientFactory factory = new JestClientFactory();
-                    factory.setDroidClientConfig(new DroidClientConfig.Builder("url")
+                    factory.setDroidClientConfig(new DroidClientConfig.Builder(getString(R.string.elasticsvr))
                             .multiThreaded(true)
                             .build());
                     JestClient client = factory.getObject();
