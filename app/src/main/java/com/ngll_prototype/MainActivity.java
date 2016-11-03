@@ -49,8 +49,8 @@ public class MainActivity extends AppCompatActivity {
     private ImageView imageView;
     private int ImgInfo[];
     private TextView tvMac;
-    private Button btnExe;
-    private Button btnStop;
+    private Button mbtnExe;
+    private Button mbtnStop;
 
     ProgressDialog mProgressDialog;
     DisaplyPoint disaplyPoint;
@@ -106,8 +106,8 @@ public class MainActivity extends AppCompatActivity {
 
         image = (ImageView) findViewById(R.id.imageView);
         tvMac = (TextView) findViewById(R.id.tvmac);
-        btnExe = (Button) findViewById(R.id.btnexe);
-        btnStop = (Button) findViewById(R.id.btnstop);
+        mbtnExe = (Button) findViewById(R.id.btnexe);
+        mbtnStop = (Button) findViewById(R.id.btnstop);
 
         setTitle("NGLL Prototype");
         setup();
@@ -136,24 +136,26 @@ public class MainActivity extends AppCompatActivity {
     private void setup() {
 
 //        int count = 0;
-        btnExe.setOnClickListener(new View.OnClickListener() {
+        mbtnExe.setOnClickListener(new View.OnClickListener() {
 //            int count = 0;
             @Override
             public void onClick(View view) {
-//                Log.d(TAG, "btnExe pressed");
+//                Log.d(TAG, "mbtnExe pressed");
 //                int indoorCo[] ={8, count};
 //                paint(indoorCo);
 //                count  = count +1;
                 disaplyPoint = new DisaplyPoint();
                 disaplyPoint.execute("101a0a000024");
                 goFlag = true;
+                chgButtonST(mbtnExe, false);
             }
         });
 
-        btnStop.setOnClickListener(new View.OnClickListener() {
+        mbtnStop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 goFlag = false;
+                chgButtonST(mbtnExe, true);
             }
         });
         tvMac.setText("101a0a000024");
@@ -169,15 +171,10 @@ public class MainActivity extends AppCompatActivity {
 //		view.invalidate();
 //		layout.addView(view);
 
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-            }
-        }).start();
     }
-
+    private void chgButtonST(Button btn, boolean state) {
+        btn.setClickable(state);
+    }
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
@@ -213,7 +210,6 @@ public class MainActivity extends AppCompatActivity {
             ImgCoordinateSet(ImgInfo);
         }
 
-//        init();
     }
 
     @Override
