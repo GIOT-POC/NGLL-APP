@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
     private int StatusBarHeight, ActionBarHeight;
     private JSONArray list;
     private Matrix matrix;
-            
+
     private ArrayList<IMGCoordinate> IMGCoorlist = new ArrayList<>();
 
     private boolean firstExe = true;
@@ -137,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
 
 //        int count = 0;
         mbtnExe.setOnClickListener(new View.OnClickListener() {
-//            int count = 0;
+            //            int count = 0;
             @Override
             public void onClick(View view) {
 //                Log.d(TAG, "mbtnExe pressed");
@@ -172,6 +172,7 @@ public class MainActivity extends AppCompatActivity {
 //		layout.addView(view);
 
     }
+
     private void chgButtonST(Button btn, boolean state) {
         btn.setClickable(state);
     }
@@ -181,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
         super.onWindowFocusChanged(hasFocus);
         Log.d(TAG, "onWindowFocusChanged");
 
-        if(firstExe){
+        if (firstExe) {
             firstExe = false;
             ImgInfo = getImageStartCoordinate(image); //get Image top, left, Height, wight
             Log.d(TAG, "ImgInfo Top:\t" + ImgInfo[0]);
@@ -424,9 +425,9 @@ public class MainActivity extends AppCompatActivity {
 
         }
         Log.d(TAG, "IMGCoorlist.length:\t" + IMGCoorlist.size());
-        for(int i =0; i < IMGCoorlist.size(); i ++){
+        for (int i = 0; i < IMGCoorlist.size(); i++) {
 
-            Log.d(TAG, "I:\t"+ i + "\tcount:\t" + IMGCoorlist.get(i).getNumber() + "\tX:\t" + IMGCoorlist.get(i).getX()
+            Log.d(TAG, "I:\t" + i + "\tcount:\t" + IMGCoorlist.get(i).getNumber() + "\tX:\t" + IMGCoorlist.get(i).getX()
                     + "\tY:\t" + IMGCoorlist.get(i).getY());
         }
 
@@ -446,18 +447,25 @@ public class MainActivity extends AppCompatActivity {
 
 
                 try {
-
                     JestClientFactory factory = new JestClientFactory();
                     factory.setDroidClientConfig(new DroidClientConfig.Builder(getString(R.string.elasticsvr))
                             .multiThreaded(true)
                             .build());
+
                     JestClient client = factory.getObject();
 
                     SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
                     searchSourceBuilder.sort("@timestamp", SortOrder.DESC);
-                    searchSourceBuilder.size(1);
+                    searchSourceBuilder.size(50);
                     searchSourceBuilder.query(QueryBuilders.matchQuery("data.macAddr", strings[0])); // generate DSL format
-                    Search search = new Search.Builder(searchSourceBuilder.toString()).addIndex("client_report").addType("asset_tracker").build();
+
+                    // newer search rule, desc find latest data & GPS_N not 0
+                    SearchSourceBuilder searchSourceBuilderTry = new SearchSourceBuilder();
+                    searchSourceBuilderTry.sort("@timestamp", SortOrder.DESC);
+                    searchSourceBuilderTry.size(1);
+                    searchSourceBuilderTry.query(QueryBuilders.boolQuery().must(QueryBuilders.matchQuery("data.macAddr", strings[0])).mustNot(QueryBuilders.termQuery("data.GPS_N", "0")));
+
+                    Search search = new Search.Builder(searchSourceBuilderTry.toString()).addIndex("client_report").addType("asset_tracker").build();
                     SearchResult searchResult = client.execute(search);
 
 //                    Log.d(TAG, "searchSourceBuilder:\t" + searchSourceBuilder.toString());
@@ -509,7 +517,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void paint(int anchorNUM) {
-        if(anchorNUM + 1 > IMGCoorlist.size()){
+        if (anchorNUM + 1 > IMGCoorlist.size()) {
             return;
         }
         canvas.drawBitmap(bitmapBG, matrix, paint); // clear screen
@@ -519,8 +527,8 @@ public class MainActivity extends AppCompatActivity {
         int y = IMGCoorlist.get(anchorNUM).getY();
 
 //        Log.d(TAG,"paint, input para coordinate[] :\t" + "\t[0]:\t" + coordinate[0] + "\t[1]:\t" + coordinate[1]);
-        Log.d(TAG,"paint, x:\t" + x);
-        Log.d(TAG,"paint, y:\t" + y);
+        Log.d(TAG, "paint, x:\t" + x);
+        Log.d(TAG, "paint, y:\t" + y);
 
         canvas.drawCircle(x, y, 7, paint);
 
@@ -560,7 +568,6 @@ public class MainActivity extends AppCompatActivity {
             mProgressDialog.dismiss();
         }
     }
-
 
 
 }

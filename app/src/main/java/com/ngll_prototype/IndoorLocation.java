@@ -25,6 +25,15 @@ public class IndoorLocation {
 //        Log.d(TAG, "" + NodeJson.get("hits").getAsJsonObject().get("hits").getAsJsonArray().get(0).getAsJsonObject().get("_source"));
 //        Log.d(TAG, "" + NodeJson.get("hits").getAsJsonObject().get("hits").getAsJsonArray().get(0).getAsJsonObject().get("_source").getAsJsonObject().get("data"));
 
+        //work around
+//        for(int i =0; i< 50; i ++){
+//            trackerInfoClass = ParseTrackerGSON(NodeJson.get("hits").getAsJsonObject().get("hits").getAsJsonArray().get(i).getAsJsonObject().get("_source").toString());
+//            if (trackerInfoClass.getGPSN() > 0) {
+//                Log.d(TAG, "GPSN:\t" + trackerInfoClass.getGPSN() + "\tTime:\t:" + trackerInfoClass.getTimestamp());
+//                break;
+//            }
+//        }
+
         trackerInfoClass = ParseTrackerGSON(NodeJson.get("hits").getAsJsonObject().get("hits").getAsJsonArray().get(0).getAsJsonObject().get("_source").toString());
         if (trackerInfoClass == null)
             return null;
@@ -36,7 +45,9 @@ public class IndoorLocation {
 
 //            Log.d(TAG, "GPS N:\t" + trackerInfoClass.getGPSN());
 //            Log.d(TAG, "GPS E:\t" + trackerInfoClass.getGPSE());
-
+        if (trackerInfoClass.getGPSE() <= 0 || trackerInfoClass.getGPSN() <=0 ){
+            return null;
+        }
             POSNum[0] = getLast3num(trackerInfoClass.getGPSN()); // get Floor;
             POSNum[1] = getLast3num(trackerInfoClass.getGPSE()); // get Anchor Number
 
