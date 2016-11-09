@@ -41,7 +41,7 @@ import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ShowTrackerView {
 
     private final static String TAG = "MainActivity";
     CustomDrawableView cd;
@@ -191,6 +191,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "ImgInfo Wight:\t" + ImgInfo[3]);
 
             bitmapBG = BitmapFactory.decodeResource(getResources(), R.drawable.gemtek8b_block2);
+            Log.d(TAG, "bitmapBG.getHeight():\t" + bitmapBG.getHeight() + "\tbitmapBG.getWidth():\t" + bitmapBG.getWidth());
 //		View v = new MyCanvas(getApplicationContext());
             bitmap = Bitmap.createBitmap(bitmapBG.getWidth()/*width*/, bitmapBG.getHeight()/*height*/, Bitmap.Config.ARGB_8888); //create a bitmap size same as bitmapBG
             canvas = new Canvas(bitmap);
@@ -273,6 +274,10 @@ public class MainActivity extends AppCompatActivity {
         return super.onTouchEvent(event);
     }
 
+    @Override
+    public void drawIndoorMap(int floorNum, int anchorNum) {
+
+    }
 
     public class CustomDrawableView extends View {
         private ShapeDrawable mDrawable;
@@ -407,7 +412,7 @@ public class MainActivity extends AppCompatActivity {
 //                  Log.d(TAG, "No." + count +"\tX:\t" + x + "\tY:\t" + y);
 //					Log.d(TAG, "obj2:\t" + obj2.toString());
 //                    canvas.drawCircle(x, y -StatusBarHeight - ActionBarHeight, 5, paint);
-//                    canvas.drawCircle(x, y, 7, paint);
+                    canvas.drawCircle(x, y, 5, paint);
 
                     list.put(obj2);
                     obj = new JSONObject();

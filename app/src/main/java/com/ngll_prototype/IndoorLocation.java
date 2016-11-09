@@ -67,6 +67,9 @@ public class IndoorLocation {
     public int getLast3num(double inNum) {
         String StrinNum = String.valueOf((long) (inNum * 1000000));
 //        Log.d(TAG, "StrGPSN:\t" + StrGPSN);
+        if (inNum <= 0)
+            return 0;
+
         int num = Integer.valueOf(StrinNum.substring(7));
         return num;
     }
