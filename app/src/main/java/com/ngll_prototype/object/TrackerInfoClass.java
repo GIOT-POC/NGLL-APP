@@ -3,6 +3,7 @@ package com.ngll_prototype.object;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * Created by Chris on 2016/10/26.
@@ -44,8 +45,9 @@ public class TrackerInfoClass implements Serializable{
     private String timestamp;
     @SerializedName("api_key")
     private String APIKey;
+    @SerializedName("Gateway")
+    private ArrayList<gatewatItem> mGatewatItemList;
     @SerializedName("raw")
-
     private String rawData;
 
     public Data getData() {
@@ -175,5 +177,22 @@ public class TrackerInfoClass implements Serializable{
 
     public void setRawData(String rawData) {
         this.rawData = rawData;
+    }
+
+    public ArrayList<gatewatItem> getGatewayList(){
+        return mGatewatItemList;
+    }
+
+    public void setGatewatItemList(ArrayList<gatewatItem> gatewatItemList) {
+        this.mGatewatItemList = gatewatItemList;
+    }
+
+    public class gatewatItem {
+        @SerializedName("rssi")
+        public int rssi;
+        @SerializedName("snr")
+        public float snr;
+        @SerializedName("gatewayID")
+        public String id;
     }
 }

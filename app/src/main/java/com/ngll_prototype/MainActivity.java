@@ -275,7 +275,7 @@ public class MainActivity extends AppCompatActivity implements ShowTrackerView {
     }
 
     @Override
-    public void drawIndoorMap(int floorNum, int anchorNum) {
+    public void drawIndoorMap(int x, int y, String gwlist) {
 
     }
 

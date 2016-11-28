@@ -26,7 +26,7 @@ public class ShowTrackerActivity extends AppCompatActivity implements ShowTracke
     private final static String TAG = "MainActivityNew";
 
     private ImageView mImageView;
-    private TextView mTvMac;
+    private TextView mTvMac, mTvGwInfo;
     private Button mBtnExe;
     private Button mBtnStop;
 
@@ -44,7 +44,7 @@ public class ShowTrackerActivity extends AppCompatActivity implements ShowTracke
     private Handler mHandler;
     private final static int MSG_VIEW_INVALIDATE = 0x1;
 
-    String mac = "101a0a000024";
+    String mac = "101a0a000025";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,6 +59,7 @@ public class ShowTrackerActivity extends AppCompatActivity implements ShowTracke
         mTvMac.setText(mac);
         mBtnExe = (Button) findViewById(R.id.btnexe);
         mBtnStop = (Button) findViewById(R.id.btnstop);
+        mTvGwInfo = (TextView) findViewById(R.id.tvgwinfo);
         setup();
     }
 
@@ -81,9 +82,15 @@ public class ShowTrackerActivity extends AppCompatActivity implements ShowTracke
         });
     }
 
-    private void sendMessage(int msg) {
+    private void sendMessage(int msg, String gwlist) {
         Log.d(TAG, "in sendMessage");
-        mHandler.obtainMessage(msg).sendToTarget();
+        Log.d(TAG, "gwList" + gwlist);
+//        Message mmsg = new Message();
+//        mmsg.obj = gwlist;
+//        mmsg.what = msg;
+        Message.obtain(mHandler, msg, gwlist).sendToTarget();
+
+//        mHandler.obtainMessage(msg).sendToTarget();
     }
 
     private void initDraw() {
@@ -132,12 +139,12 @@ public class ShowTrackerActivity extends AppCompatActivity implements ShowTracke
     }
 
     @Override
-    public void drawIndoorMap(int x, int y) {
+    public void drawIndoorMap(int x, int y, String gwlist) {
         Log.d(TAG, "drawIndoorMap, \tx:\t" + x + "\ty:\t" + y);
 //        mImageView.buildDrawingCache();
         mCanvas.drawBitmap(mbitmapBG, mMatrix, mPaint);
         mCanvas.drawCircle(x, y, 7, mPaint);
-        sendMessage(MSG_VIEW_INVALIDATE);
+        sendMessage(MSG_VIEW_INVALIDATE, gwlist);
     }
 
     @Override
@@ -146,6 +153,9 @@ public class ShowTrackerActivity extends AppCompatActivity implements ShowTracke
         switch (message.what){
             case MSG_VIEW_INVALIDATE:
                 Log.d(TAG, "in MSG_VIEW_INVALIDATE");
+                mTvGwInfo.setText("");
+//                Log.d(TAG, "obj" + (String)message.obj);
+                mTvGwInfo.setText((String)message.obj);
                 mImageView.invalidate();
                 break;
         }

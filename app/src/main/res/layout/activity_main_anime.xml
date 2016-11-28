@@ -7,10 +7,10 @@
     tools:context="com.ngll_prototype.MainActivity"
     android:id="@+id/root">
 
-    <ImageView
+    <SurfaceView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/imageView"
+        android:id="@+id/surfaceView"
         android:src="@drawable/gemtek8b_block2"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
@@ -18,7 +18,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/imageView"
+        android:layout_below="@+id/surfaceView"
         android:padding="5dp">
 
         <TextView
@@ -50,13 +50,6 @@
             android:layout_alignBaseline="@+id/btnexe"
             android:layout_alignBottom="@+id/btnexe"
             android:layout_alignParentEnd="true" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_below="@+id/btnexe"
-            android:id="@+id/tvgwinfo"/>
     </RelativeLayout>
 
 </RelativeLayout>

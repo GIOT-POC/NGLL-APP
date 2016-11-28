@@ -56,6 +56,11 @@ public class NodeDataFetchImpl implements NodeDataFetch{
                     }
                     listener.onSucess(result);
 
+                    Log.d(TAG, "result.getGatewayList.size:\t" + result.getGatewayList().size());
+//                    for (TrackerInfoClass.gatewatItem item: result.getGatewayList()) {
+//                        Log.d(TAG, "" + item.id + "\trssi\t" + item.rssi + "\tsnr\t"+ item.snr);
+//
+//                    }
 //                    Log.d(TAG, "searchSourceBuilder:\t" + searchSourceBuilder.toString());
 //                    Log.d(TAG, "Total:\t" + searchResult.getTotal());
 //                    Log.d(TAG, "searchResult:\t" + searchResult.getJsonString());

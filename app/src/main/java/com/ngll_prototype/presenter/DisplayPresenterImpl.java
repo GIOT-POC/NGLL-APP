@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import com.ngll_prototype.ShowTrackerView;
 import com.ngll_prototype.model.NodeDataFetch;
 import com.ngll_prototype.model.NodeDataFetchImpl;
+import com.ngll_prototype.object.IDUlist;
 import com.ngll_prototype.object.IMGCoordinate;
 import com.ngll_prototype.object.TrackerInfoClass;
 
@@ -20,10 +21,12 @@ public class DisplayPresenterImpl implements DisplayPresenter, NodeDataFetch.OnN
     private NodeDataFetch mNodeDataFetch;
     private ArrayList<IMGCoordinate> mIMGCoordinatesList = new ArrayList<>();
     private static boolean mGetExE;
+    private static IDUlist mIDUlsist;
 
     public DisplayPresenterImpl(ShowTrackerView mainView) {
         this.mMainView = mainView;
         this.mNodeDataFetch = new NodeDataFetchImpl();
+        mIDUlsist = new IDUlist();
     }
 
     @Override
@@ -36,10 +39,12 @@ public class DisplayPresenterImpl implements DisplayPresenter, NodeDataFetch.OnN
         if (getStatus(TrackObj.getRawData(), 6) == 1) {
             if (anchor + 1 <= mIMGCoordinatesList.size())
                 if (mMainView != null) {
+
                     //draw node position in the view
                     mMainView.drawIndoorMap(
                             mIMGCoordinatesList.get(anchor).getX(),
-                            mIMGCoordinatesList.get(anchor).getY());
+                            mIMGCoordinatesList.get(anchor).getY(),
+                            reFormatGwList(TrackObj.getGatewayList()));
                 }
         }
     }
@@ -145,4 +150,18 @@ public class DisplayPresenterImpl implements DisplayPresenter, NodeDataFetch.OnN
         return 0;
     }
 
+    public String reFormatGwList(ArrayList<TrackerInfoClass.gatewatItem> gatewatItemArrayList) {
+        String gwlist=null;
+        for (TrackerInfoClass.gatewatItem item: gatewatItemArrayList) {
+
+//            Log.d(TAG, "gwid:" + item.id + "\tmark\t" + mIDUlsist.mGetMark(item.id));
+            if (mIDUlsist.mGetMark(item.id) != null){
+                gwlist = "GWid: " + mIDUlsist.mGetMark(item.id)
+                        + "  rssi: " + item.rssi
+                        + "  snr: " +item.snr
+                        + "\n";
+            }
+        }
+        return gwlist;
+    }
 }
