@@ -124,6 +124,20 @@ public class DisplayPresenterImpl implements DisplayPresenter, NodeDataFetch.OnN
     }
 
     @Override
+    public void showAllDot(Context context) {
+        for (int i =0; i < mIMGCoordinatesList.size(); i++){
+            mMainView.showAllDot(
+                    mIMGCoordinatesList.get(i).getX(),
+                    mIMGCoordinatesList.get(i).getY());
+        }
+    }
+
+    @Override
+    public void cleanAllDot(Context context) {
+        mMainView.cleanDraw();
+    }
+
+    @Override
     public void onDestroy() {
         mMainView = null;
     }

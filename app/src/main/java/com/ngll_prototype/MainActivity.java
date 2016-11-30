@@ -41,7 +41,7 @@ import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
 
 
-public class MainActivity extends AppCompatActivity implements ShowTrackerView {
+public class MainActivity extends AppCompatActivity {
 
     private final static String TAG = "MainActivity";
     CustomDrawableView cd;
@@ -274,10 +274,6 @@ public class MainActivity extends AppCompatActivity implements ShowTrackerView {
         return super.onTouchEvent(event);
     }
 
-    @Override
-    public void drawIndoorMap(int x, int y, String gwlist) {
-
-    }
 
     public class CustomDrawableView extends View {
         private ShapeDrawable mDrawable;

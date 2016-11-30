@@ -12,5 +12,9 @@ public interface DisplayPresenter {
 
     void setIMGCoordinate(Context context, ImageView imageView);
 
+    void showAllDot(Context context);
+
+    void cleanAllDot(Context context);
+
     void onDestroy();
 }

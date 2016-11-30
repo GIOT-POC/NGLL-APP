@@ -13,7 +13,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -45,6 +47,8 @@ public class ShowTrackerActivity extends AppCompatActivity implements ShowTracke
     private final static int MSG_VIEW_INVALIDATE = 0x1;
 
     String mac = "101a0a000025";
+    private static int press_count;
+    private static boolean displaydot=false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -61,6 +65,7 @@ public class ShowTrackerActivity extends AppCompatActivity implements ShowTracke
         mBtnStop = (Button) findViewById(R.id.btnstop);
         mTvGwInfo = (TextView) findViewById(R.id.tvgwinfo);
         setup();
+        toolbar();
     }
 
     private void setup() {
@@ -78,6 +83,48 @@ public class ShowTrackerActivity extends AppCompatActivity implements ShowTracke
             public void onClick(View view) {
                 mDisplayPresenter.stopGetNodePOS();
                 mBtnExe.setClickable(true);
+            }
+        });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.toolbar_list, menu);
+
+        return true;
+    }
+
+    private void toolbar() {
+        final Toolbar mainToolBar = (Toolbar) findViewById(R.id.topmost_toolbar);
+        setSupportActionBar(mainToolBar);
+        mainToolBar.setTitle(getString(R.string.app_name));
+//        mainToolBar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+//            @Override
+//            public boolean onMenuItemClick(MenuItem item) {
+//                switch (item.getItemId()) {
+//                    case R.menu.toolbar_list:
+//
+//                        break;
+//                }
+//                return false;
+//            }
+//        });
+
+        mainToolBar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                press_count  +=1;
+                if (press_count ==5 && !displaydot) {
+                    Log.d(TAG, "count\t" + press_count);
+                    Log.d(TAG, "reset count");
+                    mDisplayPresenter.showAllDot(ShowTrackerActivity.this);
+                    displaydot = true;
+                    press_count = 0;
+                } else if(press_count == 2 && displaydot){
+                    mDisplayPresenter.cleanAllDot(ShowTrackerActivity.this);
+                    press_count = 0;
+                    displaydot = false;
+                }
             }
         });
     }
@@ -139,10 +186,22 @@ public class ShowTrackerActivity extends AppCompatActivity implements ShowTracke
     }
 
     @Override
+    public void showAllDot(int x, int y) {
+        mCanvas.drawCircle(x, y, 7, mPaint);
+        sendMessage(MSG_VIEW_INVALIDATE, "");
+    }
+
+    @Override
+    public void cleanDraw() {
+        mCanvas.drawBitmap(mbitmapBG, mMatrix, mPaint); // clear screen
+        sendMessage(MSG_VIEW_INVALIDATE, "");
+    }
+
+    @Override
     public void drawIndoorMap(int x, int y, String gwlist) {
         Log.d(TAG, "drawIndoorMap, \tx:\t" + x + "\ty:\t" + y);
 //        mImageView.buildDrawingCache();
-        mCanvas.drawBitmap(mbitmapBG, mMatrix, mPaint);
+        mCanvas.drawBitmap(mbitmapBG, mMatrix, mPaint); // clear screen
         mCanvas.drawCircle(x, y, 7, mPaint);
         sendMessage(MSG_VIEW_INVALIDATE, gwlist);
     }

@@ -7,13 +7,11 @@
     tools:context="com.ngll_prototype.MainActivity"
     android:id="@+id/root">
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/imageView"
-        android:src="@drawable/gemtek8b_block2"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+    <include
+        android:id="@+id/topmost_toolbar"
+        layout="@layout/toolbar"
+        />
+
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -58,5 +56,13 @@
             android:layout_below="@+id/btnexe"
             android:id="@+id/tvgwinfo"/>
     </RelativeLayout>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView"
+        android:src="@drawable/gemtek8b_block2"
+        android:layout_below="@+id/topmost_toolbar"
+        android:layout_centerHorizontal="true"/>
 
 </RelativeLayout>
