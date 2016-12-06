@@ -28,7 +28,7 @@ public class ShowTrackerActivity extends AppCompatActivity implements ShowTracke
     private final static String TAG = "MainActivityNew";
 
     private ImageView mImageView;
-    private TextView mTvMac, mTvGwInfo;
+    private TextView mTvMac, mTvGwInfo, mTvPreGWinfo;
     private Button mBtnExe;
     private Button mBtnStop;
 
@@ -47,6 +47,7 @@ public class ShowTrackerActivity extends AppCompatActivity implements ShowTracke
     private final static int MSG_VIEW_INVALIDATE = 0x1;
 
     String mac = "101a0a000025";
+//    String mac = "101a0a000024";
     private static int press_count;
     private static boolean displaydot=false;
 
@@ -64,6 +65,7 @@ public class ShowTrackerActivity extends AppCompatActivity implements ShowTracke
         mBtnExe = (Button) findViewById(R.id.btnexe);
         mBtnStop = (Button) findViewById(R.id.btnstop);
         mTvGwInfo = (TextView) findViewById(R.id.tvgwinfo);
+        mTvPreGWinfo = (TextView) findViewById(R.id.tvpregwinfo);
         setup();
         toolbar();
     }
@@ -129,17 +131,6 @@ public class ShowTrackerActivity extends AppCompatActivity implements ShowTracke
         });
     }
 
-    private void sendMessage(int msg, String gwlist) {
-        Log.d(TAG, "in sendMessage");
-        Log.d(TAG, "gwList" + gwlist);
-//        Message mmsg = new Message();
-//        mmsg.obj = gwlist;
-//        mmsg.what = msg;
-        Message.obtain(mHandler, msg, gwlist).sendToTarget();
-
-//        mHandler.obtainMessage(msg).sendToTarget();
-    }
-
     private void initDraw() {
         Drawable drawable = mImageView.getDrawable();
 
@@ -188,33 +179,39 @@ public class ShowTrackerActivity extends AppCompatActivity implements ShowTracke
     @Override
     public void showAllDot(int x, int y) {
         mCanvas.drawCircle(x, y, 7, mPaint);
-        sendMessage(MSG_VIEW_INVALIDATE, "");
+        sendMessage(MSG_VIEW_INVALIDATE);
     }
 
     @Override
     public void cleanDraw() {
         mCanvas.drawBitmap(mbitmapBG, mMatrix, mPaint); // clear screen
-        sendMessage(MSG_VIEW_INVALIDATE, "");
+        sendMessage(MSG_VIEW_INVALIDATE);
     }
 
     @Override
-    public void drawIndoorMap(int x, int y, String gwlist) {
+    public void drawIndoorMap(int x, int y) {
         Log.d(TAG, "drawIndoorMap, \tx:\t" + x + "\ty:\t" + y);
 //        mImageView.buildDrawingCache();
         mCanvas.drawBitmap(mbitmapBG, mMatrix, mPaint); // clear screen
         mCanvas.drawCircle(x, y, 7, mPaint);
-        sendMessage(MSG_VIEW_INVALIDATE, gwlist);
+        sendMessage(MSG_VIEW_INVALIDATE);
+    }
+
+    private void sendMessage(int msg) {
+        Log.d(TAG, "in sendMessage");
+//        Message.obtain(mHandler, msg).sendToTarget();
+        mHandler.obtainMessage(msg).sendToTarget();
     }
 
     @Override
     public boolean handleMessage(Message message) {
-        Log.d(TAG, "in handleMessage, what:\t" + message.what);
+//        Log.d(TAG, "in handleMessage, what:\t" + message.what);
         switch (message.what){
             case MSG_VIEW_INVALIDATE:
                 Log.d(TAG, "in MSG_VIEW_INVALIDATE");
                 mTvGwInfo.setText("");
-//                Log.d(TAG, "obj" + (String)message.obj);
-                mTvGwInfo.setText((String)message.obj);
+                mTvGwInfo.setText(mDisplayPresenter.getCurrentGWiNFO());
+                mTvPreGWinfo.setText(mDisplayPresenter.getPreviousGWiNFO());
                 mImageView.invalidate();
                 break;
         }

@@ -16,5 +16,9 @@ public interface DisplayPresenter {
 
     void cleanAllDot(Context context);
 
+    String getPreviousGWiNFO();
+
+    String getCurrentGWiNFO();
+
     void onDestroy();
 }

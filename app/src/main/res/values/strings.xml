@@ -2,4 +2,6 @@
     <string name="app_name">NGLL</string>
     <string name="loading">Loading...</string>
     <string name="well">井</string>
+    <string name="str_current">Current</string>
+    <string name="str_previous">Previous</string>
 </resources>

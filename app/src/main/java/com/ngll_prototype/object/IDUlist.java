@@ -18,6 +18,10 @@ public class IDUlist {
         mIDUList.put("00001c497b48db93" ,"C");
         mIDUList.put("00001c497b48dbcf" ,"D");
         mIDUList.put("00001c497b48dbd5" ,"D");
+        mIDUList.put("00000049060f610a" ,"A");
+        mIDUList.put("00000049060f620a" ,"B");
+        mIDUList.put("00000049060f640a" ,"C");
+        mIDUList.put("00000049060f630a" ,"D");
     }
 
     public String mGetMark(String mac) {

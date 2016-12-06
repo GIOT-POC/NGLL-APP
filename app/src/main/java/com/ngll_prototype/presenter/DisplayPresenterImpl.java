@@ -22,6 +22,9 @@ public class DisplayPresenterImpl implements DisplayPresenter, NodeDataFetch.OnN
     private ArrayList<IMGCoordinate> mIMGCoordinatesList = new ArrayList<>();
     private static boolean mGetExE;
     private static IDUlist mIDUlsist;
+    private TrackerInfoClass mPreviousTrackObj = null,
+            mCurrentTrackObj = null,
+            mTempTrackObj = null;
 
     public DisplayPresenterImpl(ShowTrackerView mainView) {
         this.mMainView = mainView;
@@ -33,7 +36,7 @@ public class DisplayPresenterImpl implements DisplayPresenter, NodeDataFetch.OnN
     public void onSucess(TrackerInfoClass TrackObj) {
         int floor = getLast3num(TrackObj.getGPSN());
         int anchor = getLast3num(TrackObj.getGPSE());
-
+        mCurrentTrackObj = TrackObj;
         Log.d(TAG, "onSucess, getStatus:\t" + getStatus(TrackObj.getRawData(), 6));
         Log.d(TAG, "anchor:\t" + anchor + "\nmIMGCoordinatesList.size():\t" + mIMGCoordinatesList.size());
         if (getStatus(TrackObj.getRawData(), 6) == 1) {
@@ -43,8 +46,7 @@ public class DisplayPresenterImpl implements DisplayPresenter, NodeDataFetch.OnN
                     //draw node position in the view
                     mMainView.drawIndoorMap(
                             mIMGCoordinatesList.get(anchor).getX(),
-                            mIMGCoordinatesList.get(anchor).getY(),
-                            reFormatGwList(TrackObj.getGatewayList()));
+                            mIMGCoordinatesList.get(anchor).getY());
                 }
         }
     }
@@ -87,20 +89,32 @@ public class DisplayPresenterImpl implements DisplayPresenter, NodeDataFetch.OnN
         final int origH = drawable.getIntrinsicHeight();
         final int origW = drawable.getIntrinsicWidth();
 
+//        int toScaleH = 4; //for ticc
+//        int toScaleW = 4; //for ticc
+
         int toScaleH = 5;
         int toScaleW = 6;
 
+
         int spacingH = origH / toScaleH;
-        int spacingW = origW / toScaleW;
+//        int spacingW = origW / toScaleW;
+        int spacingW = (origW+5) / toScaleW; // for TICC extend width
 
         int x, y = 0;
         int count = 0;
         Log.d(TAG, "spacingH:\t" + spacingH + "\tspacingW:\t" + spacingW);
-
+        int ticc201bH = 5;
+        int ticc201bW = 5;
         for (int i = 1; i < toScaleH; i++) {
 
+//            if (i+1 == toScaleH || i+2 == toScaleH) {//extend last rows distance
+//                Log.d(TAG, "i\t" + i);
+////                spacingW = spacingW + ticc201bW;
+//                spacingH  = ticc201bH + spacingH;
+//            }
             x = 0;
             y = y + spacingH;
+            Log.d(TAG, "y:\t" + y);
             for (int j = 1; j < toScaleW; j++) {
                 try {
                     x = x + spacingW;
@@ -124,6 +138,36 @@ public class DisplayPresenterImpl implements DisplayPresenter, NodeDataFetch.OnN
     }
 
     @Override
+    public String getPreviousGWiNFO() {
+        if(mPreviousTrackObj == null) { // first time execute previous is empty
+            mTempTrackObj = mCurrentTrackObj;
+//            Log.d(TAG, "Previous GWsINFO:\t" + mPreviousGWinfo);
+            return "";
+        }
+        else {
+            String list;
+            if (mTempTrackObj.getAT_TS() == mCurrentTrackObj.getAT_TS()){ //current data was not change, event get from server.
+                return reFormatGwList(mPreviousTrackObj.getGatewayList());
+            } else {
+                mPreviousTrackObj = mTempTrackObj; // current data was update, then transfer temp to previous
+                list = reFormatGwList(mPreviousTrackObj.getGatewayList());
+            }
+
+            if(mTempTrackObj.getAT_TS() < mCurrentTrackObj.getAT_TS()){ // new current data update to temp.
+                mTempTrackObj = mCurrentTrackObj;
+            }
+            return list;
+        }
+
+
+    }
+
+    @Override
+    public String getCurrentGWiNFO() {
+        return reFormatGwList(mCurrentTrackObj.getGatewayList());
+    }
+
+    @Override
     public void showAllDot(Context context) {
         for (int i =0; i < mIMGCoordinatesList.size(); i++){
             mMainView.showAllDot(
@@ -144,9 +188,9 @@ public class DisplayPresenterImpl implements DisplayPresenter, NodeDataFetch.OnN
 
     public int getLast3num(double inNum) {
         String StrinNum = String.valueOf((long) (inNum * 1000000));
-//        Log.d(TAG, "StrGPSN:\t" + StrGPSN);
+        Log.d(TAG, "StrGPSN:\t" + StrinNum);
         if (inNum <= 0)
-            return 0;
+            return -1;
 
         int num = Integer.valueOf(StrinNum.substring(7));
         return num;
@@ -165,17 +209,24 @@ public class DisplayPresenterImpl implements DisplayPresenter, NodeDataFetch.OnN
     }
 
     public String reFormatGwList(ArrayList<TrackerInfoClass.gatewatItem> gatewatItemArrayList) {
-        String gwlist=null;
+        String GWList= "";
+        String tempString;
+
+        if(gatewatItemArrayList == null) return "";
+
         for (TrackerInfoClass.gatewatItem item: gatewatItemArrayList) {
 
 //            Log.d(TAG, "gwid:" + item.id + "\tmark\t" + mIDUlsist.mGetMark(item.id));
             if (mIDUlsist.mGetMark(item.id) != null){
-                gwlist = "GWid: " + mIDUlsist.mGetMark(item.id)
+                Log.d(TAG, "GWID:\t" + item.id + "\tRSSI:\t" + item.rssi + "\t SNR:\t" + item.snr);
+                tempString = "GWid: " + mIDUlsist.mGetMark(item.id)
                         + "  rssi: " + item.rssi
                         + "  snr: " +item.snr
                         + "\n";
+                GWList = GWList + tempString;
             }
         }
-        return gwlist;
+//        Log.d(TAG, "GWList:\n" + GWList);
+        return GWList;
     }
 }

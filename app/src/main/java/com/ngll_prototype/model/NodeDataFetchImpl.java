@@ -40,6 +40,7 @@ public class NodeDataFetchImpl implements NodeDataFetch{
                     searchSourceBuilderTry.sort("@timestamp", SortOrder.DESC);
                     searchSourceBuilderTry.size(1);
                     searchSourceBuilderTry.query(QueryBuilders.boolQuery().must(QueryBuilders.matchQuery("data.macAddr", mac)).mustNot(QueryBuilders.termQuery("data.GPS_N", "0")));
+//                    searchSourceBuilderTry.query(QueryBuilders.boolQuery().must(QueryBuilders.matchQuery("data.macAddr", mac)));
 
                     Search search = new Search.Builder(searchSourceBuilderTry.toString()).addIndex("client_report").addType("asset_tracker").build();
                     SearchResult searchResult = client.execute(search);

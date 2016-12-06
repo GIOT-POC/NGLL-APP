@@ -49,12 +49,42 @@
             android:layout_alignBottom="@+id/btnexe"
             android:layout_alignParentEnd="true" />
 
-        <TextView
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_below="@+id/btnexe"
-            android:id="@+id/tvgwinfo"/>
+            android:layout_height="match_parent"
+            android:layout_below="@+id/btnexe">
+
+            <TextView
+                android:text="@string/str_current"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvCurrentGWsInfoTopic"/>
+
+            <TextView
+                android:text="@string/str_previous"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:id="@+id/tvPreviousGWsInfoTopic"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_below="@+id/tvCurrentGWsInfoTopic"
+                android:textSize="11sp"
+                android:id="@+id/tvgwinfo"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_alignParentEnd="true"
+                android:textSize="11sp"
+                android:layout_below="@+id/tvPreviousGWsInfoTopic"
+                android:id="@+id/tvpregwinfo"/>
+
+        </RelativeLayout>
     </RelativeLayout>
 
     <ImageView
