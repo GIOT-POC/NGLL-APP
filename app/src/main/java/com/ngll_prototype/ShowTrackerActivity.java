@@ -45,6 +45,7 @@ public class ShowTrackerActivity extends AppCompatActivity implements ShowTracke
     private Context mContext;
     private Handler mHandler;
     private final static int MSG_VIEW_INVALIDATE = 0x1;
+    private final static int MSG_VIEW_INVALIDATE_ALL_DOT = 0x2;
 
     String mac = "101a0a000025";
 //    String mac = "101a0a000024";
@@ -179,13 +180,13 @@ public class ShowTrackerActivity extends AppCompatActivity implements ShowTracke
     @Override
     public void showAllDot(int x, int y) {
         mCanvas.drawCircle(x, y, 7, mPaint);
-        sendMessage(MSG_VIEW_INVALIDATE);
+        sendMessage(MSG_VIEW_INVALIDATE_ALL_DOT);
     }
 
     @Override
     public void cleanDraw() {
         mCanvas.drawBitmap(mbitmapBG, mMatrix, mPaint); // clear screen
-        sendMessage(MSG_VIEW_INVALIDATE);
+        sendMessage(MSG_VIEW_INVALIDATE_ALL_DOT);
     }
 
     @Override
@@ -212,6 +213,12 @@ public class ShowTrackerActivity extends AppCompatActivity implements ShowTracke
                 mTvGwInfo.setText("");
                 mTvGwInfo.setText(mDisplayPresenter.getCurrentGWiNFO());
                 mTvPreGWinfo.setText(mDisplayPresenter.getPreviousGWiNFO());
+                mImageView.invalidate();
+                break;
+
+            case MSG_VIEW_INVALIDATE_ALL_DOT:
+                Log.d(TAG, "MSG_VIEW_INVALIDATE_ALL_DOT");
+                mTvGwInfo.setText("");
                 mImageView.invalidate();
                 break;
         }

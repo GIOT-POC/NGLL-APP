@@ -10,9 +10,15 @@ import com.ngll_prototype.model.NodeDataFetch;
 import com.ngll_prototype.model.NodeDataFetchImpl;
 import com.ngll_prototype.object.IDUlist;
 import com.ngll_prototype.object.IMGCoordinate;
+import com.ngll_prototype.object.SourceClass;
 import com.ngll_prototype.object.TrackerInfoClass;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class DisplayPresenterImpl implements DisplayPresenter, NodeDataFetch.OnNodeDataFetchListener {
     private final static String TAG = "DisplayPresenterImpl";
@@ -33,7 +39,11 @@ public class DisplayPresenterImpl implements DisplayPresenter, NodeDataFetch.OnN
     }
 
     @Override
-    public void onSucess(TrackerInfoClass TrackObj) {
+    public void onSucess(ArrayList<SourceClass> SourceList) {
+        //try GPSECountImpl
+        TrackerInfoClass TrackObj = GPSECountImpl(SourceList);
+//        TrackerInfoClass TrackObj = SourceList.get(0).getTrackerInfoClass();
+
         int floor = getLast3num(TrackObj.getGPSN());
         int anchor = getLast3num(TrackObj.getGPSE());
         mCurrentTrackObj = TrackObj;
@@ -49,6 +59,8 @@ public class DisplayPresenterImpl implements DisplayPresenter, NodeDataFetch.OnN
                             mIMGCoordinatesList.get(anchor).getY());
                 }
         }
+
+
     }
 
     @Override
@@ -89,16 +101,15 @@ public class DisplayPresenterImpl implements DisplayPresenter, NodeDataFetch.OnN
         final int origH = drawable.getIntrinsicHeight();
         final int origW = drawable.getIntrinsicWidth();
 
-//        int toScaleH = 4; //for ticc
-//        int toScaleW = 4; //for ticc
-
         int toScaleH = 5;
+//        int toScaleH = 7;
         int toScaleW = 6;
+//        int toScaleW = 7;
 
 
         int spacingH = origH / toScaleH;
-//        int spacingW = origW / toScaleW;
-        int spacingW = (origW+5) / toScaleW; // for TICC extend width
+        int spacingW = origW / toScaleW;
+//        int spacingW = (origW+5) / toScaleW; // for TICC extend width
 
         int x, y = 0;
         int count = 0;
@@ -139,21 +150,28 @@ public class DisplayPresenterImpl implements DisplayPresenter, NodeDataFetch.OnN
 
     @Override
     public String getPreviousGWiNFO() {
-        if(mPreviousTrackObj == null) { // first time execute previous is empty
-            mTempTrackObj = mCurrentTrackObj;
+        if (mPreviousTrackObj == null) { // first time execute previous is empty
+            mPreviousTrackObj = new TrackerInfoClass();
+            mTempTrackObj = new TrackerInfoClass();
+            mTempTrackObj.setAP_TS(0);
 //            Log.d(TAG, "Previous GWsINFO:\t" + mPreviousGWinfo);
+            Log.d(TAG, "mPreviousTrackObj is null");
             return "";
-        }
-        else {
-            String list;
-            if (mTempTrackObj.getAT_TS() == mCurrentTrackObj.getAT_TS()){ //current data was not change, event get from server.
-                return reFormatGwList(mPreviousTrackObj.getGatewayList());
-            } else {
-                mPreviousTrackObj = mTempTrackObj; // current data was update, then transfer temp to previous
-                list = reFormatGwList(mPreviousTrackObj.getGatewayList());
-            }
+        } else {
+            String list = "";
+            if (mTempTrackObj != null) {
 
-            if(mTempTrackObj.getAT_TS() < mCurrentTrackObj.getAT_TS()){ // new current data update to temp.
+                if (mTempTrackObj.getAP_TS() == mCurrentTrackObj.getAP_TS()) { //current data was not change, event get from server.
+                    Log.d(TAG, "Temp time equal Current time");
+                    return reFormatGwList(mPreviousTrackObj.getGatewayList());
+                } else {
+                    Log.d(TAG, "Temp time unequal Current time, set mPreviousTrackObj from temp");
+                    mPreviousTrackObj = mTempTrackObj; // current data was update, then transfer temp to previous
+                    list = reFormatGwList(mPreviousTrackObj.getGatewayList());
+                }
+            }
+            if (mTempTrackObj.getAP_TS() < mCurrentTrackObj.getAP_TS()) { // new current data update to temp.
+                Log.d(TAG, "temp time small than current time");
                 mTempTrackObj = mCurrentTrackObj;
             }
             return list;
@@ -164,6 +182,9 @@ public class DisplayPresenterImpl implements DisplayPresenter, NodeDataFetch.OnN
 
     @Override
     public String getCurrentGWiNFO() {
+        if(mCurrentTrackObj == null){
+            return "";
+        }
         return reFormatGwList(mCurrentTrackObj.getGatewayList());
     }
 
@@ -188,7 +209,7 @@ public class DisplayPresenterImpl implements DisplayPresenter, NodeDataFetch.OnN
 
     public int getLast3num(double inNum) {
         String StrinNum = String.valueOf((long) (inNum * 1000000));
-        Log.d(TAG, "StrGPSN:\t" + StrinNum);
+//        Log.d(TAG, "StrGPSN:\t" + StrinNum);
         if (inNum <= 0)
             return -1;
 
@@ -229,4 +250,63 @@ public class DisplayPresenterImpl implements DisplayPresenter, NodeDataFetch.OnN
 //        Log.d(TAG, "GWList:\n" + GWList);
         return GWList;
     }
+
+    class CountClass {
+        int count, addr;
+        double GPSE;
+        public CountClass(double gpse, int count, int addr) {
+            this.GPSE = gpse;
+            this.count = count;
+            this.addr = addr;
+        }
+
+        private void increase (){
+            count = count +1;
+        }
+    }
+
+    //return the coordinate appears most times
+    private TrackerInfoClass GPSECountImpl(ArrayList<SourceClass> list) {
+        Log.d(TAG, "list.size" + list.size());
+        Map<Double, CountClass>  map = new HashMap<>();
+
+        //first start exec
+        double douGPSE = list.get(0).getTrackerInfoClass().getGPSE();
+        CountClass temp = new CountClass(douGPSE, 1, 0);
+        map.put(douGPSE, temp); //adding to container
+
+        for (int i = 1; i < list.size(); i++) {
+            douGPSE = list.get(i).getTrackerInfoClass().getGPSE();
+            if ((list.get(i - 1).getTrackerInfoClass().getAP_TS() - list.get(i).getTrackerInfoClass().getAP_TS())/1000 > 5) { //previous and next AP time difference small than 5s
+//                Log.d(TAG, "AP_TS difference small than 5s\t" + "previous:\t" + list.get(i - 1).getTrackerInfoClass().getAP_TS() +"\t-\tcurrent\t" + list.get(i - 1).getTrackerInfoClass().getAP_TS() + "\t=\t" + (list.get(i - 1).getTrackerInfoClass().getAP_TS() - list.get(i).getTrackerInfoClass().getAP_TS()));
+                continue;
+            } else if (map.containsKey(douGPSE)) { // GPS_E exist, that count + 1
+//                Log.d(TAG, "GPS_E repeat");
+                map.get(douGPSE).increase();
+            } else {
+                // newer GPS_E
+//                Log.d(TAG, "new GPS_E");
+//                int GPSE = getLast3num(list.get(i).getTrackerInfoClass().getGPSE()); // fetch last number of GPSE
+                douGPSE = list.get(i).getTrackerInfoClass().getGPSE();
+                temp = new CountClass(douGPSE, 1, i);
+                map.put(douGPSE, temp);
+            }
+
+        }
+
+        Log.d(TAG, "sort result");
+        List<Map.Entry<Double, CountClass>> sortlist = new ArrayList<>(map.entrySet());
+        Collections.sort(sortlist, new Comparator<Map.Entry<Double, CountClass>>() {
+            @Override
+            public int compare(Map.Entry<Double, CountClass> entry1, Map.Entry<Double, CountClass> entry2) {
+                return entry1.getValue().count - entry2.getValue().count;
+            }
+        });
+
+        Log.d(TAG, "Had max counts GPS_E " + list.get(sortlist.get(sortlist.size()-1).getValue().addr).getTrackerInfoClass().getGPSE());
+        Log.d(TAG, "count" + sortlist.get(sortlist.size()-1).getValue().count);
+
+        return list.get(sortlist.get(sortlist.size()-1).getValue().addr).getTrackerInfoClass();
+    }
+
 }

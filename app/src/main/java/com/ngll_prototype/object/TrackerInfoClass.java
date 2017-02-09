@@ -12,11 +12,16 @@ import java.util.ArrayList;
 public class TrackerInfoClass implements Serializable{
     private static final long serialVersionUID = -2132746372434281199L;
 
+//    public TrackerInfoClass() {
+//        super();
+//        Data data = new Data();
+//    }
+
     class Data {
         @SerializedName("SIGS")
         private double rssi;
-        @SerializedName("AT_TS")
-        private long AT_TS;
+        @SerializedName("AP_TS")
+        private long AP_TS;
         @SerializedName("macAddr")
         private String mac;
         @SerializedName("frameCnt")
@@ -38,9 +43,11 @@ public class TrackerInfoClass implements Serializable{
         @SerializedName("MOTION")
         private int Motion;
     }
+//    @SerializedName("_source")
+//    private TrackerInfoClass mTrackerInfoClass = new TrackerInfoClass();
 
     @SerializedName("data")
-    private Data data;
+    private Data data = new Data();
     @SerializedName(value = "timestamp", alternate = {"@timestamp"})
     private String timestamp;
     @SerializedName("api_key")
@@ -67,12 +74,12 @@ public class TrackerInfoClass implements Serializable{
         this.data.rssi = rssi;
     }
 
-    public long getAT_TS() {
-        return data.AT_TS;
+    public long getAP_TS() {
+        return data.AP_TS;
     }
 
-    public void setAT_TS(long AT_TS) {
-        this.data.AT_TS = AT_TS;
+    public void setAP_TS(long AT_TS) {
+        this.data.AP_TS = AT_TS;
     }
 
     public String getMac() {
@@ -189,7 +196,7 @@ public class TrackerInfoClass implements Serializable{
 
     public class gatewatItem {
         @SerializedName("rssi")
-        public int rssi;
+        public double rssi;
         @SerializedName("snr")
         public float snr;
         @SerializedName("gatewayID")
