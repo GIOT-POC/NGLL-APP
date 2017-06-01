@@ -56,7 +56,8 @@ public class DisplayPresenterImpl implements DisplayPresenter, NodeDataFetch.OnN
                     //draw node position in the view
                     mMainView.drawIndoorMap(
                             mIMGCoordinatesList.get(anchor).getX(),
-                            mIMGCoordinatesList.get(anchor).getY());
+                            mIMGCoordinatesList.get(anchor).getY(),
+                            floor, anchor);
                 }
         }
 
@@ -76,8 +77,9 @@ public class DisplayPresenterImpl implements DisplayPresenter, NodeDataFetch.OnN
             public void run() {
                 while (mGetExE) {
                     try {
-                        mNodeDataFetch.getNodeData(context, mac, DisplayPresenterImpl.this); // get node date
-                        Thread.sleep(10000);
+                        mNodeDataFetch.getNodeData(context, mac, DisplayPresenterImpl.this); //get node data
+//                        Thread.sleep(10000);
+                        Thread.sleep(5000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -102,8 +104,10 @@ public class DisplayPresenterImpl implements DisplayPresenter, NodeDataFetch.OnN
         final int origW = drawable.getIntrinsicWidth();
 
         int toScaleH = 5;
+        //THE POINT DISPLAY IN SCREEN WILL BE toScaleH-1 =4
 //        int toScaleH = 7;
         int toScaleW = 6;
+        //THE POINT DISPLAY IN SCREEN WILL BE toScaleW-1 =5
 //        int toScaleW = 7;
 
 
@@ -114,8 +118,6 @@ public class DisplayPresenterImpl implements DisplayPresenter, NodeDataFetch.OnN
         int x, y = 0;
         int count = 0;
         Log.d(TAG, "spacingH:\t" + spacingH + "\tspacingW:\t" + spacingW);
-        int ticc201bH = 5;
-        int ticc201bW = 5;
         for (int i = 1; i < toScaleH; i++) {
 
 //            if (i+1 == toScaleH || i+2 == toScaleH) {//extend last rows distance
@@ -129,8 +131,8 @@ public class DisplayPresenterImpl implements DisplayPresenter, NodeDataFetch.OnN
             for (int j = 1; j < toScaleW; j++) {
                 try {
                     x = x + spacingW;
-                    imgCoordinateTmp = new IMGCoordinate(count, x, y);
-                    mIMGCoordinatesList.add(imgCoordinateTmp);
+//                    imgCoordinateTmp = new IMGCoordinate(count, x, y);
+                    mIMGCoordinatesList.add(new IMGCoordinate(count, x, y));
                     count = count + 1;
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -139,6 +141,10 @@ public class DisplayPresenterImpl implements DisplayPresenter, NodeDataFetch.OnN
             }
 
         }
+
+        //temporary add a point presenting demo room for NTT demo
+//         mIMGCoordinatesList.add(new IMGCoordinate(20, 650, 58));
+
         Log.d(TAG, "IMGCoorlist.length:\t" + mIMGCoordinatesList.size());
 //        for (int i = 0; i < mIMGCoordinatesList.size(); i++) {
 //
@@ -160,8 +166,8 @@ public class DisplayPresenterImpl implements DisplayPresenter, NodeDataFetch.OnN
         } else {
             String list = "";
             if (mTempTrackObj != null) {
-
-                if (mTempTrackObj.getAP_TS() == mCurrentTrackObj.getAP_TS()) { //current data was not change, event get from server.
+                //current data was not change, event get from server.
+                if (mTempTrackObj.getAP_TS() == mCurrentTrackObj.getAP_TS()) {
                     Log.d(TAG, "Temp time equal Current time");
                     return reFormatGwList(mPreviousTrackObj.getGatewayList());
                 } else {
@@ -277,10 +283,12 @@ public class DisplayPresenterImpl implements DisplayPresenter, NodeDataFetch.OnN
 
         for (int i = 1; i < list.size(); i++) {
             douGPSE = list.get(i).getTrackerInfoClass().getGPSE();
-            if ((list.get(i - 1).getTrackerInfoClass().getAP_TS() - list.get(i).getTrackerInfoClass().getAP_TS())/1000 > 5) { //previous and next AP time difference small than 5s
+            //previous and next AP time difference small than 5s
+            if ((list.get(i - 1).getTrackerInfoClass().getAP_TS() - list.get(i).getTrackerInfoClass().getAP_TS())/1000 > 5) {
 //                Log.d(TAG, "AP_TS difference small than 5s\t" + "previous:\t" + list.get(i - 1).getTrackerInfoClass().getAP_TS() +"\t-\tcurrent\t" + list.get(i - 1).getTrackerInfoClass().getAP_TS() + "\t=\t" + (list.get(i - 1).getTrackerInfoClass().getAP_TS() - list.get(i).getTrackerInfoClass().getAP_TS()));
                 continue;
-            } else if (map.containsKey(douGPSE)) { // GPS_E exist, that count + 1
+                // GPS_E exist, that count + 1
+            } else if (map.containsKey(douGPSE)) {
 //                Log.d(TAG, "GPS_E repeat");
                 map.get(douGPSE).increase();
             } else {

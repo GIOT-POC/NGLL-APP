@@ -110,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
         mbtnStop = (Button) findViewById(R.id.btnstop);
 
         setTitle("NGLL Prototype");
+        Log.d(TAG, "---- Old Activity ----");
         setup();
 //        Node node = nodeBuilder().node();
 //        Client client = node.client();
@@ -216,6 +217,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        Log.d(TAG, "onTouchEvent....");
         int x = (int) event.getX();//取x軸
         int y = (int) event.getY();//取y軸
         int action = event.getAction();//取整數
@@ -227,7 +229,7 @@ public class MainActivity extends AppCompatActivity {
 //                setTitle("平移:" + x + "," + y);
                 break;
             case MotionEvent.ACTION_UP:
-//                setTitle("彈起:" + x + "," + y);
+                setTitle("彈起:" + x + "," + y);
                 break;
         }
 

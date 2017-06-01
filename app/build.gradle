@@ -19,11 +19,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-//    dexOptions {
-//        //incremental = true;
-//        preDexLibraries = false
-//        javaMaxHeapSize "4g"
-//    }
+    dexOptions {
+        //incremental = true;
+        preDexLibraries = false
+        javaMaxHeapSize "4g"
+    }
 
     packagingOptions {
         exclude 'META-INF/DEPENDENCIES'
@@ -34,15 +34,16 @@ android {
     }
 
     //for version above SDK 23
-    useLibrary  'org.apache.http.legacy'
+//    useLibrary  'org.apache.http.legacy'
 }
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:24.2.1'
-    compile group: 'org.elasticsearch', name: 'elasticsearch', version: '2.4.1'
+    compile (group: 'org.elasticsearch', name: 'elasticsearch', version: '2.4.1', transitive:false)
     compile 'io.searchbox:jest-droid:2.0.3'
     compile 'com.android.support:design:24.2.1'
-//    compile 'com.squareup.okhttp3:okhttp:3.4.1'
+//    compile group: 'org.elasticsearch.client', name: 'transport', version: '5.2.2'
+//    compile files('libs/elasticsearch-2.4.1/elasticsearch-2.4.1.jar')
 }

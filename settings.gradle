@@ -1,2 +1,2 @@
-include ':app', ':app:libs:httpcore-4.4.4'
-include ':app:libs:httpclient-4.5.2',':app:libs:httpclient-android-4.3.5.1'
+include ':app'
+//include ':app:libs:httpclient-4.5.2',':app:libs:httpclient-android-4.3.5.1', ':app:libs:httpcore-4.4.4'

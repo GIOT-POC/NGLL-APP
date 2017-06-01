@@ -47,6 +47,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/btnexe"
             android:elevation="0dp"
+            android:textColor="@color/btnexe_text_color"
             android:paddingTop="10dp"
             android:layout_marginTop="13dp"
             android:layout_below="@+id/tvmac"
@@ -64,7 +65,8 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/btnexe">
+            android:layout_below="@+id/btnexe"
+            android:visibility="gone">
 
             <TextView
                 android:text="@string/str_current"
@@ -97,6 +99,50 @@
                 android:id="@+id/tvpregwinfo"/>
 
         </RelativeLayout>
+
+        <TextView
+            android:text="Floor: "
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btnexe"
+            android:textSize="18sp"
+            android:id="@+id/tvfloor"/>
+        <TextView
+            android:text="null"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btnexe"
+            android:layout_toRightOf="@+id/tvfloor"
+            android:textSize="18sp"
+            android:id="@+id/tvfloorNum"/>
+
+        <TextView
+            android:text="  ||  "
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btnexe"
+            android:layout_toRightOf="@+id/tvfloorNum"
+            android:textSize="18sp"
+            android:id="@+id/splitsign"/>
+
+        <TextView
+            android:text="Anchor: "
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btnexe"
+            android:layout_toRightOf="@+id/splitsign"
+            android:textSize="18sp"
+            android:id="@+id/tvanchor"/>
+
+        <TextView
+            android:text="null"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btnexe"
+            android:layout_toRightOf="@+id/tvanchor"
+            android:textSize="18sp"
+            android:id="@+id/tvanchorNum"/>
+
     </RelativeLayout>
 
     <ImageView
